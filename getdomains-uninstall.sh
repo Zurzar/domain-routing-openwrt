@@ -12,6 +12,9 @@ sed -i '/getdomains start/d' /etc/crontabs/root
 echo "Выпиливаем домены"
 rm -f /tmp/dnsmasq.d/domains.lst
 
+# Добавляем удаление Cloudflare routes
+rm -f /etc/hotplug.d/iface/99-cloudflare
+
 echo "Чистим firewall, раз раз 🍴"
 
 ipset_id=$(uci show firewall | grep -E '@ipset.*name=.vpn_domains.' | awk -F '[][{}]' '{print $2}' | head -n 1)
