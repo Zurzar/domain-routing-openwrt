@@ -688,31 +688,24 @@ EOF
 }
 
 add_cloudflares() {
-    clear
-    echo "┌──────────────────────────────────────┐"
-    echo "│    Cloudflare Routes Setup Script    │"
-    echo "└──────────────────────────────────────┘"
+    # Меню выбора
     echo
-    echo "This will create automatic routes for Cloudflare IPs"
-    echo "when your VPN (tun0) connects."
-    echo
-    echo "Choose action:"
-    echo "1) Install Cloudflare routes script"
-    echo "2) Cancel and exit"
-    echo
-
+    echo "Добавить маршруты Cloudflare?"
+    echo "1) Да (создать скрипт)"
+    echo "2) Нет (пропустить)"
+    
     while true; do
-        read -p "Select option [1-2]: " choice
-        case $choice in
+        read -r -p "Ваш выбор [1/2]: " CLOUDF
+        case "$CLOUDF" in
             1)
-                echo
-                echo "Creating /etc/hotplug.d/iface/99-cloudflare..."
+                echo "Создаю /etc/hotplug.d/iface/99-cloudflare..."
                 
+                # Записываем скрипт (без перезагрузки!)
                 cat << 'EOF' > /etc/hotplug.d/iface/99-cloudflare
 #!/bin/sh
 [ "$ACTION" = "ifup" ] && [ "$INTERFACE" = "tun0" ] || exit 0
 
-# Cloudflare IPv4 routes
+# Список подсетей Cloudflare
 ip route add 103.21.244.0/22 via 172.16.250.1 dev tun0
 ip route add 103.22.200.0/22 via 172.16.250.1 dev tun0
 ip route add 103.31.4.0/22 via 172.16.250.1 dev tun0
@@ -731,23 +724,16 @@ ip route add 198.41.128.0/17 via 172.16.250.1 dev tun0
 EOF
 
                 chmod +x /etc/hotplug.d/iface/99-cloudflare
-                echo
-                echo "✓ Script created successfully!"
-                echo "The routes will be added automatically when tun0 connects."
-                echo
-                echo "To test immediately, run:"
-                echo "  ifdown tun0 && ifup tun0"
-                echo
-                return 0
+                echo "Готово! Скрипт создан и активирован."
+                echo "Маршруты добавятся при следующем подключении tun0."
+                return 0  # Важно: возвращаем статус, а не выходим из скрипта!
                 ;;
             2)
-                echo
-                echo "Operation cancelled. No changes were made."
-                echo
+                echo "Пропускаем создание маршрутов Cloudflare."
                 return 0
                 ;;
             *)
-                echo "Invalid option. Please choose 1 or 2."
+                echo "Ошибка: выберите 1 или 2"
                 ;;
         esac
     done
