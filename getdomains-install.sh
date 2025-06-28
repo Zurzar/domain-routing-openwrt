@@ -688,24 +688,24 @@ EOF
 }
 
 add_cloudflares() {
-    # Меню выбора
+    # Menu
     echo
-    echo "Добавить маршруты Cloudflare?"
-    echo "1) Да (создать скрипт)"
-    echo "2) Нет (пропустить)"
+    echo "Configure Cloudflare routes?"
+    echo "1) Yes (create script)"
+    echo "2) No (skip)"
     
     while true; do
-        read -r -p "Ваш выбор [1/2]: " CLOUDF
+        read -r -p "Your choice [1/2]: " CLOUDF
         case "$CLOUDF" in
             1)
-                echo "Создаю /etc/hotplug.d/iface/99-cloudflare..."
+                echo "Creating /etc/hotplug.d/iface/99-cloudflare..."
                 
-                # Записываем скрипт (без перезагрузки!)
+                # Create the hotplug script
                 cat << 'EOF' > /etc/hotplug.d/iface/99-cloudflare
 #!/bin/sh
 [ "$ACTION" = "ifup" ] && [ "$INTERFACE" = "tun0" ] || exit 0
 
-# Список подсетей Cloudflare
+# Cloudflare IPv4 routes
 ip route add 103.21.244.0/22 via 172.16.250.1 dev tun0
 ip route add 103.22.200.0/22 via 172.16.250.1 dev tun0
 ip route add 103.31.4.0/22 via 172.16.250.1 dev tun0
@@ -724,16 +724,16 @@ ip route add 198.41.128.0/17 via 172.16.250.1 dev tun0
 EOF
 
                 chmod +x /etc/hotplug.d/iface/99-cloudflare
-                echo "Готово! Скрипт создан и активирован."
-                echo "Маршруты добавятся при следующем подключении tun0."
-                return 0  # Важно: возвращаем статус, а не выходим из скрипта!
+                echo "Done! Script created and activated."
+                echo "Routes will be added automatically when tun0 connects."
+                return 0  # Important: returns without exiting parent script
                 ;;
             2)
-                echo "Пропускаем создание маршрутов Cloudflare."
+                echo "Skipping Cloudflare routes setup."
                 return 0
                 ;;
             *)
-                echo "Ошибка: выберите 1 или 2"
+                echo "Error: please choose 1 or 2"
                 ;;
         esac
     done
