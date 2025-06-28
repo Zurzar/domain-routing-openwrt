@@ -6,14 +6,14 @@ rm -rf /etc/init.d/getdomains
 
 rm -f /etc/hotplug.d/iface/30-vpnroute /etc/hotplug.d/net/30-vpnroute
 
+# Добавляем удаление Cloudflare routes
+rm -f /etc/hotplug.d/iface/99-cloudflare
+
 echo "Выпиливаем из crontab"
 sed -i '/getdomains start/d' /etc/crontabs/root
 
 echo "Выпиливаем домены"
 rm -f /tmp/dnsmasq.d/domains.lst
-
-# Добавляем удаление Cloudflare routes
-rm -f /etc/hotplug.d/iface/99-cloudflare
 
 echo "Чистим firewall, раз раз 🍴"
 
