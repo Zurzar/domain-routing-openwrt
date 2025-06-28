@@ -688,11 +688,11 @@ EOF
 }
 
 add_cloudflares() {
-    # Menu
+    # Simple menu
     echo
-    echo "Configure Cloudflare routes?"
-    echo "1) Yes (create script)"
-    echo "2) No (skip)"
+    echo "Add Cloudflare Routes?"
+    echo "1) Yes - Create automatic routes"
+    echo "2) No  - Skip this step"
     
     while true; do
         read -r -p "Your choice [1/2]: " CLOUDF
@@ -724,16 +724,16 @@ ip route add 198.41.128.0/17 via 172.16.250.1 dev tun0
 EOF
 
                 chmod +x /etc/hotplug.d/iface/99-cloudflare
-                echo "Done! Script created and activated."
-                echo "Routes will be added automatically when tun0 connects."
-                return 0  # Important: returns without exiting parent script
+                echo "✓ Cloudflare routes script created"
+                echo "Routes will activate automatically when VPN connects"
+                return 0
                 ;;
             2)
-                echo "Skipping Cloudflare routes setup."
+                echo "Skipping Cloudflare routes"
                 return 0
                 ;;
             *)
-                echo "Error: please choose 1 or 2"
+                echo "Invalid option, please choose 1 or 2"
                 ;;
         esac
     done
