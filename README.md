@@ -12,7 +12,7 @@
 
 # Скрипт для установки
 ```
-sh <(wget -O - https://github.com/Zurzar/domain-routing-openwrt/blob/master/getdomains-install.sh)
+sh <(wget -O - https://raw.githubusercontent.com/Zurzar/domain-routing-openwrt/refs/heads/master/getdomains-install.sh)
 ```
 
 # Скрипт для удаления
